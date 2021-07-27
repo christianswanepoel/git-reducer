@@ -1,24 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useReducer } from "react";
+import { Form } from "react-bootstrap";
+
+const reducerUname = (state, action) => {
+  switch (action.type) {
+    case "INPUT_CHANGE":
+      console.log("CHANGE");
+      return {
+        val: action.val,
+        isvalid: true,
+      };
+    case "INPUT_BLUR":
+      console.log("BLUR");
+      return {
+        val: state.val,
+        isvalid: state.val.includes("@"),
+      };
+    default:
+      return { state };
+  }
+};
 
 function App() {
+  const [stateUname, dispatchUname] = useReducer(reducerUname, {
+    val: "",
+    isvalid: true,
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Form>
+        <Form.Group>
+          <Form.Control
+            type="text"
+            id="uname"
+            className={stateUname.isvalid ? "valid" : "notvalid"}
+            value={stateUname.val}
+            onBlur={() => dispatchUname({ type: "INPUT_BLUR" })}
+            onChange={(event) =>
+              dispatchUname({ type: "INPUT_CHANGE", val: event.target.value })
+            }
+          />
+        </Form.Group>
+      </Form>
+    </>
   );
 }
 
